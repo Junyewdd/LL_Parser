@@ -27,11 +27,16 @@ class Lexer:
         self.pos = 0
         next_token = None
         token_string = ''
+        self.sentence=''
+        
+    def split_statements(self,content):
+        return content.split(';')
         
     def error(self):
         raise Exception('Invalid character')
     
     def advance(self):
+        self.sentence += self.text[self.pos]
         self.pos += 1
         if self.pos > len(self.text) - 1:
             self.current_char = None
@@ -58,7 +63,6 @@ class Lexer:
     
     ###
     def lexical(self):
-        
         while self.current_char is not None:
             # 공백
             if self.current_char.isspace():
@@ -87,6 +91,8 @@ class Lexer:
                 self.advance()
                 self.token_string = ";"
                 self.next_token = SEMI_COLON
+                print(self.sentence)
+                self.sentence = ''
                 return
             # +
             if self.current_char == "+":
@@ -124,9 +130,12 @@ class Lexer:
                 self.token_string = ")"
                 self.next_token = RIGHT_PAREN
                 return
-            
-            
+        
             # self.error()
             
+        if self.sentence:
+            print(self.sentence)
+            self.sentence = None
+        
         self.token_string = ''
         self.next_token = EOF
