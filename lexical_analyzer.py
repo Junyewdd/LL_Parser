@@ -33,6 +33,7 @@ class Lexer:
         self.const = 0
         self.op = 0
         self.state = "(OK)"
+        self.print_type = print_type
         self.printer = Printer(print_type, symbolTable)
         self.symbol_table = None
         
@@ -81,12 +82,14 @@ class Lexer:
                 self.token_string = self.word()
                 self.next_token = IDENT
                 self.id += 1
+                self.printer.print_type_b(self.token_string)
                 return
             # 숫자
             if self.current_char.isdigit():
                 self.token_string = str(self.integer())
                 self.next_token = CONST
                 self.const += 1
+                self.printer.print_type_b(self.token_string)
                 return
             
             # ;
@@ -94,12 +97,14 @@ class Lexer:
                 self.advance()
                 self.token_string = ";"
                 self.next_token = SEMI_COLON
-                print(self.sentence)
+                if self.print_type == 'a':
+                    print(self.sentence)
                 self.printer.print_type_a(self.id, self.const, self.op, self.state, False)
                 self.sentence = ''
                 self.id = 0
                 self.const = 0
                 self.op = 0
+                self.printer.print_type_b(self.token_string)
                 return
             
             # :=    
@@ -109,6 +114,7 @@ class Lexer:
                     self.advance()
                     self.token_string = ":="
                     self.next_token = ASSIGNMENT_OP
+                    self.printer.print_type_b(self.token_string)
                     return
             # +
             if self.current_char == "+":
@@ -116,6 +122,7 @@ class Lexer:
                 self.token_string = "+"
                 self.next_token = ADD_OP
                 self.op += 1
+                self.printer.print_type_b(self.token_string)
                 return
             # -
             if self.current_char == "-":
@@ -123,6 +130,7 @@ class Lexer:
                 self.token_string = "-"
                 self.next_token = MIN_OP
                 self.op += 1
+                self.printer.print_type_b(self.token_string)
                 return
             # *
             if self.current_char == "*":
@@ -130,6 +138,7 @@ class Lexer:
                 self.token_string = "*"
                 self.next_token = MULT_OP
                 self.op += 1
+                self.printer.print_type_b(self.token_string)
                 return
             # /
             if self.current_char == "/":
@@ -137,25 +146,29 @@ class Lexer:
                 self.token_string = "/"
                 self.next_token = DIV_OP
                 self.op += 1
+                self.printer.print_type_b(self.token_string)
                 return
             # (
             if self.current_char == "(":
                 self.advance()
                 self.token_string = "("
                 self.next_token = LEFT_PAREN
+                self.printer.print_type_b(self.token_string)
                 return
             # /
             if self.current_char == ")":
                 self.advance()
                 self.token_string = ")"
                 self.next_token = RIGHT_PAREN
+                self.printer.print_type_b(self.token_string)
                 return
             
         
-            # self.error()
+            self.error()
             
         if self.sentence:
-            print(self.sentence)
+            if self.print_type == 'a':
+                print(self.sentence)
             self.printer.print_type_a(self.id, self.const, self.op, self.state, True)
             self.sentence = None
         

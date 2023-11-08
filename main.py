@@ -5,7 +5,7 @@ from program import Program
 
 def main():
     
-    print_type = 'a'
+    print_type = 'b'
     
     with open('file1.txt', 'r') as file:
         content = file.read().strip()
