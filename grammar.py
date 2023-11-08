@@ -59,6 +59,8 @@ class Parser:
             value = self.term()
             if isAddOp == -1:
                 value *= -1
+            if self.lexer.next_token == RIGHT_PAREN:
+                break
             value += self.term_tail()
         return value
 
@@ -66,21 +68,21 @@ class Parser:
     def term(self):
         print("term")
         value = self.factor()
-        if self.lexer.next_token == MULT_OP:
-            value *= self.factor_tail()
+        # if self.lexer.next_token in [MULT_OP, DIV_OP]:
+        #     value *= self.factor_tail()
+        value = self.factor_tail(value)
         return value
 
     # <factor_tail> → <mult_op><factor><factor_tail> | ε
-    def factor_tail(self):
+    def factor_tail(self, value):
         print("factor_tail")
-        value = 1
-        if self.lexer.next_token == MULT_OP:
+        while self.lexer.next_token in [MULT_OP, DIV_OP]:
             isMultOp = self.mult_operator()
-            value = self.factor()
             if isMultOp == 1:
-                value *= self.factor_tail()
+                value *= self.factor()
             elif isMultOp == -1:
-                value /= self.factor_tail()
+                value /= self.factor()
+            value = self.factor_tail(value)
         return value
 
     # <factor> → <left_paren><expression><right_paren> | <ident> | <const>

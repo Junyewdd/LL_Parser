@@ -100,11 +100,29 @@ class Lexer:
                 self.token_string = "-"
                 self.next_token = MIN_OP
                 return
+            # *
+            if self.current_char == "*":
+                self.advance()
+                self.token_string = "*"
+                self.next_token = MULT_OP
+                return
             # /
             if self.current_char == "/":
                 self.advance()
                 self.token_string = "/"
                 self.next_token = DIV_OP
+                return
+            # (
+            if self.current_char == "(":
+                self.advance()
+                self.token_string = "("
+                self.next_token = LEFT_PAREN
+                return
+            # /
+            if self.current_char == ")":
+                self.advance()
+                self.token_string = ")"
+                self.next_token = RIGHT_PAREN
                 return
             
             
