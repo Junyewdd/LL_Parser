@@ -1,11 +1,9 @@
 from lexical_analyzer import IDENT, CONST, ASSIGNMENT_OP, SEMI_COLON, ADD_OP, MIN_OP, MULT_OP, DIV_OP, LEFT_PAREN, RIGHT_PAREN, EOF
 
-from symbol_table import SymbolTable
-
 class Parser:
-    def __init__(self, lexer):
+    def __init__(self, lexer, symbolTable):
         self.lexer = lexer
-        self.symbol_table = SymbolTable()
+        self.symbol_table = symbolTable
         
     def error(self, message):
         print(f"Error : {message}")
@@ -21,40 +19,38 @@ class Parser:
     
     # <program> → <statements>
     def program(self):
-        print("program")
+        # print("program")
         self.statements()
         self.match(EOF)
     
     # <statements> → <statement> | <statement><semi_colon><statements>
     def statements(self):
-        print("statements")
+        # print("statements")
         self.statement()
         while self.lexer.next_token == SEMI_COLON:
             self.match(SEMI_COLON)
             self.statement()
+            ##
             
     # <statement> → <ident><assignment_op><expression>
     def statement(self):
-        print("statement")
+        # print("statement")
         ident_name = self.ident()
         self.assignment_op()
         value = self.expression()
         self.symbol_table.set(ident_name, value)
         
-        # print(ident_name)
-        # print(self.symbol_table.get(ident_name))
-        self.symbol_table.print_symbol_table()
         
     # <expression> → <term><term_tail>
     def expression(self):
-        print("expression")
+        # print("expression")
         value = self.term()
         value += self.term_tail()
         return value
         
     # <term_tail> → <add_op><term><term_tail> | ε
     def term_tail(self):
-        print("term_tail")
+        # print("term_tail")
         value = 0
         while self.lexer.next_token in [ADD_OP, MIN_OP]:
             isAddOp = self.add_operator()
@@ -68,7 +64,7 @@ class Parser:
 
     # <term> → <factor> <factor_tail>
     def term(self):
-        print("term")
+        # print("term")
         value = self.factor()
         # if self.lexer.next_token in [MULT_OP, DIV_OP]:
         #     value *= self.factor_tail()
@@ -77,7 +73,7 @@ class Parser:
 
     # <factor_tail> → <mult_op><factor><factor_tail> | ε
     def factor_tail(self, value):
-        print("factor_tail")
+        # print("factor_tail")
         while self.lexer.next_token in [MULT_OP, DIV_OP]:
             isMultOp = self.mult_operator()
             if isMultOp == 1:
@@ -89,7 +85,7 @@ class Parser:
 
     # <factor> → <left_paren><expression><right_paren> | <ident> | <const>
     def factor(self):
-        print("factor")
+        # print("factor")
         if self.lexer.next_token == LEFT_PAREN:
             self.match(LEFT_PAREN)
             value = self.expression()
@@ -107,7 +103,7 @@ class Parser:
 
     # <const> → any decimal numbers
     def const(self):
-        print("const")
+        # print("const")
         value = self.lexer.token_string
         self.match(CONST)
         try:
@@ -117,24 +113,24 @@ class Parser:
 
     # <ident> → any names conforming to C identifier rules
     def ident(self):
-        print("ident")
+        # print("ident")
         ident_name = self.lexer.token_string
         self.match(IDENT)
         return ident_name
 
     # <assignment_op> → :=
     def assignment_op(self):
-        print("assignment_op")
+        # print("assignment_op")
         self.match(ASSIGNMENT_OP)
 
     # <semi_colon> → ;
     def semi_colon(self):
-        print("semi_colon")
+        # print("semi_colon")
         self.match(SEMI_COLON)
 
     # <add_operator> → + | -
     def add_operator(self):
-        print("add_operator")
+        # print("add_operator")
         if self.lexer.next_token == ADD_OP:
             self.match(ADD_OP)
             return 1
@@ -146,7 +142,7 @@ class Parser:
 
     # <mult_operator> → * | /
     def mult_operator(self):
-        print("mult_operator")
+        # print("mult_operator")
         if self.lexer.next_token == MULT_OP:
             self.match(MULT_OP)
             return 1
@@ -158,15 +154,15 @@ class Parser:
 
     # <left_paren> → (
     def left_paren(self):
-        print("left_paren")
+        # print("left_paren")
         self.match(LEFT_PAREN)
         
     # <right_paren> → )
     def right_paren(self):
-        print("right_paren")
+        # print("right_paren")
         self.match(RIGHT_PAREN)
         
     def parse(self):
-        print("parse")
+        # print("parse")
         self.program()
         self.match(EOF)

@@ -17,4 +17,4 @@ class SymbolTable:
     
     def print_symbol_table(self):
         for ident, value in self.table.items():
-            print(f"{ident}: {value}")
+            print(f"{ident}: {value}", end='; ')
