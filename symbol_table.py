@@ -14,3 +14,7 @@ class SymbolTable:
     
     def exists(self, name):
         return name in self.table
+    
+    def print_symbol_table(self):
+        for ident, value in self.table.items():
+            print(f"{ident}: {value}")

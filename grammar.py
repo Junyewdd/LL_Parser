@@ -40,8 +40,10 @@ class Parser:
         self.assignment_op()
         value = self.expression()
         self.symbol_table.set(ident_name, value)
-        print(ident_name)
-        print(self.symbol_table.get(ident_name))
+        
+        # print(ident_name)
+        # print(self.symbol_table.get(ident_name))
+        self.symbol_table.print_symbol_table()
         
     # <expression> → <term><term_tail>
     def expression(self):
