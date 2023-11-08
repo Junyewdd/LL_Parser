@@ -54,25 +54,26 @@ class Parser:
     def term_tail(self):
         print("term_tail")
         value = 0
-        if self.lexer.next_token == ADD_OP:
+        while self.lexer.next_token in [ADD_OP, MIN_OP]:
             isAddOp = self.add_operator()
             value = self.term()
-            if(isAddOp == 1):
-                value += self.term_tail()
-            elif(isAddOp == -1):
-                value -= self.term_tail()            
+            if isAddOp == -1:
+                value *= -1
+            value += self.term_tail()
         return value
 
     # <term> → <factor> <factor_tail>
     def term(self):
         print("term")
         value = self.factor()
-        value *= self.factor_tail()
+        if self.lexer.next_token == MULT_OP:
+            value *= self.factor_tail()
         return value
 
     # <factor_tail> → <mult_op><factor><factor_tail> | ε
     def factor_tail(self):
         print("factor_tail")
+        value = 1
         if self.lexer.next_token == MULT_OP:
             isMultOp = self.mult_operator()
             value = self.factor()
@@ -80,8 +81,6 @@ class Parser:
                 value *= self.factor_tail()
             elif isMultOp == -1:
                 value /= self.factor_tail()
-        else: 
-            value = 1
         return value
 
     # <factor> → <left_paren><expression><right_paren> | <ident> | <const>
@@ -91,8 +90,12 @@ class Parser:
             self.match(LEFT_PAREN)
             value = self.expression()
             self.match(RIGHT_PAREN)
-        elif self.lexer.next_token == IDENT:            
-            value = self.ident()
+        elif self.lexer.next_token == IDENT:
+            ident_name = self.ident()            
+            if self.symbol_table.exists(ident_name):
+                value = self.symbol_table.get(ident_name)
+            else:
+                self.error(f"{ident_name} is not defined")
         else:
             value = self.const()
         return value
