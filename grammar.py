@@ -5,6 +5,7 @@ class Parser:
         self.lexer = lexer
         self.symbol_table = symbolTable
         self.isUnknown = False
+        self.current_operator = ''
         
     def error(self, message):
         print(f"Error : {message}")
@@ -140,9 +141,12 @@ class Parser:
     def add_operator(self):
         if self.lexer.next_token == ADD_OP:
             self.match(ADD_OP)
+            self.check_consecutive_operators(ADD_OP)
+            
             return 1
         elif self.lexer.next_token == MIN_OP:
             self.match(MIN_OP)
+            self.check_consecutive_operators(MIN_OP)
             return -1
         else:
             self.error("Expected a multiplication or division operator")
@@ -151,9 +155,11 @@ class Parser:
     def mult_operator(self):
         if self.lexer.next_token == MULT_OP:
             self.match(MULT_OP)
+            self.check_consecutive_operators(MULT_OP)
             return 1
         elif self.lexer.next_token == DIV_OP:
             self.match(DIV_OP)
+            self.check_consecutive_operators(DIV_OP)
             return -1
         else:
             self.error("Expected a multiplication or division operator")
@@ -172,3 +178,22 @@ class Parser:
         if self.lexer.print_type == 'a':
             print("Result ==> ", end = " ")
             self.symbol_table.print_symbol_table()
+    
+    def setState(self, sentence):
+        if self.lexer.state == "(OK)":
+            self.lexer.state = sentence
+        else:
+            self.lexer.state += sentence
+    
+    def check_consecutive_operators(self, token_type):
+        TOKEN_DICT={ADD_OP:"+", MIN_OP:"-", MULT_OP:"*", DIV_OP:"/"}
+        check = False
+        while self.lexer.next_token == token_type:
+            self.lexer.skip_print = True
+            self.match(token_type)
+            if check == False:
+                self.setState(f"(Warning) 중복 연산자({TOKEN_DICT[token_type]}) 제거")
+                check = True
+        self.lexer.skip_print = False
+        
+            

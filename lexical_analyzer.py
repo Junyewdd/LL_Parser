@@ -36,6 +36,8 @@ class Lexer:
         self.print_type = print_type
         self.printer = Printer(print_type, symbolTable)
         self.symbol_table = symbolTable
+        self.skip_print = False
+        
         
     # def setState(self, newState):
     #     self.state = newState
@@ -47,8 +49,9 @@ class Lexer:
         raise Exception('Invalid character')
     
     def advance(self):
-        # if self.text[self.pos] != "\n":
-        #     self.sentence += self.text[self.pos]
+        # if self.isContinued:
+        #     self.pos +=1
+        #     self.isContinued = False
         self.pos += 1
         if self.pos > len(self.text) - 1:
             self.current_char = None
@@ -76,6 +79,9 @@ class Lexer:
     ###
     def lexical(self):
         while self.current_char is not None:
+            # if self.skip_print:
+            #     self.skip_print = True
+            #     continue
             # 공백
             if self.current_char.isspace() or ord(self.current_char) <= 32:
                 self.skip_whitespace()
@@ -134,6 +140,7 @@ class Lexer:
             # +
             if self.current_char == "+":
                 self.advance()
+                self.skip_token("+")
                 self.token_string = "+"
                 self.next_token = ADD_OP
                 self.sentence += self.token_string
@@ -143,6 +150,7 @@ class Lexer:
             # -
             if self.current_char == "-":
                 self.advance()
+                self.skip_token("-")
                 self.token_string = "-"
                 self.next_token = MIN_OP
                 self.sentence += self.token_string
@@ -152,6 +160,7 @@ class Lexer:
             # *
             if self.current_char == "*":
                 self.advance()
+                self.skip_token("*")
                 self.token_string = "*"
                 self.next_token = MULT_OP
                 self.sentence += self.token_string
@@ -161,6 +170,7 @@ class Lexer:
             # /
             if self.current_char == "/":
                 self.advance()
+                self.skip_token("/")
                 self.token_string = "/"
                 self.next_token = DIV_OP
                 self.sentence += self.token_string
@@ -195,3 +205,9 @@ class Lexer:
         
         self.token_string = ''
         self.next_token = EOF
+        
+    def skip_token(self, token):
+        # 중복 '+' 연산자를 건너뛰는 로직 추가
+        self.skip_whitespace()
+        while self.current_char == token:            
+            self.advance()
