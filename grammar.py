@@ -21,13 +21,11 @@ class Parser:
     
     # <program> → <statements>
     def program(self):
-        # print("program")
         self.statements()
         self.match(EOF)
     
     # <statements> → <statement> | <statement><semi_colon><statements>
     def statements(self):
-        # print("statements")
         self.statement()
         while self.lexer.next_token == SEMI_COLON:
             self.match(SEMI_COLON)
@@ -37,7 +35,6 @@ class Parser:
             
     # <statement> → <ident><assignment_op><expression>
     def statement(self):
-        # print("statement")
         ident_name = self.ident(True)
         self.assignment_op()
         value = self.expression()
@@ -46,7 +43,6 @@ class Parser:
         
     # <expression> → <term><term_tail>
     def expression(self):
-        # print("expression")
         value = self.term()
         result = self.term_tail()
         if value == "Unknown" or result == "Unknown":
@@ -57,7 +53,6 @@ class Parser:
         
     # <term_tail> → <add_op><term><term_tail> | ε
     def term_tail(self):
-        # print("term_tail")
         value = 0
         while self.lexer.next_token in [ADD_OP, MIN_OP]:
             isAddOp = self.add_operator()
@@ -73,7 +68,6 @@ class Parser:
 
     # <term> → <factor> <factor_tail>
     def term(self):
-        # print("term")
         
         value = self.factor()
         
@@ -82,7 +76,6 @@ class Parser:
 
     # <factor_tail> → <mult_op><factor><factor_tail> | ε
     def factor_tail(self, value):
-        # print("factor_tail")
         if value == "Unknown":
             return "Unknown"
         while self.lexer.next_token in [MULT_OP, DIV_OP]:
@@ -96,7 +89,6 @@ class Parser:
 
     # <factor> → <left_paren><expression><right_paren> | <ident> | <const>
     def factor(self):
-        # print("factor")
         if self.lexer.next_token == LEFT_PAREN:
             self.match(LEFT_PAREN)
             value = self.expression()
@@ -115,7 +107,6 @@ class Parser:
 
     # <const> → any decimal numbers
     def const(self):
-        # print("const")
         value = self.lexer.token_string
         self.match(CONST)
         try:
@@ -125,14 +116,13 @@ class Parser:
 
     # <ident> → any names conforming to C identifier rules
     def ident(self, isAssigned):
-        # print("ident")
         ident_name = self.lexer.token_string
         # if (not isAssigned) and (not self.symbol_table.exists(ident_name)) and (not self.isUnknown):
         if (not isAssigned) and (not self.symbol_table.exists(ident_name)):
             if self.lexer.state == "(OK)":
                 self.lexer.state = f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
             else:
-                self.lexer.state += f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
+                self.lexer.state += f"\n(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
             self.symbol_table.set(ident_name, "Unknown")
             self.isUnknown = True
         self.match(IDENT)
@@ -140,17 +130,14 @@ class Parser:
 
     # <assignment_op> → :=
     def assignment_op(self):
-        # print("assignment_op")
         self.match(ASSIGNMENT_OP)
 
     # <semi_colon> → ;
     def semi_colon(self):
-        # print("semi_colon")
         self.match(SEMI_COLON)
 
     # <add_operator> → + | -
     def add_operator(self):
-        # print("add_operator")
         if self.lexer.next_token == ADD_OP:
             self.match(ADD_OP)
             return 1
@@ -162,7 +149,6 @@ class Parser:
 
     # <mult_operator> → * | /
     def mult_operator(self):
-        # print("mult_operator")
         if self.lexer.next_token == MULT_OP:
             self.match(MULT_OP)
             return 1
@@ -174,16 +160,13 @@ class Parser:
 
     # <left_paren> → (
     def left_paren(self):
-        # print("left_paren")
         self.match(LEFT_PAREN)
         
     # <right_paren> → )
     def right_paren(self):
-        # print("right_paren")
         self.match(RIGHT_PAREN)
         
     def parse(self):
-        # print("parse")
         self.program()
         self.match(EOF)
         if self.lexer.print_type == 'a':

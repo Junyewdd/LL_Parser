@@ -26,8 +26,8 @@ class Lexer:
         self.text = text
         self.current_char = self.text[0]
         self.pos = 0
-        next_token = None
-        token_string = ''
+        # next_token = None
+        # token_string = ''
         self.sentence=''
         self.id = 0
         self.const = 0
