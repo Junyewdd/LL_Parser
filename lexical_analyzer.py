@@ -68,7 +68,7 @@ class Lexer:
     
     def word(self):
         result = ''
-        while self.current_char is not None and self.current_char.isalpha() or self.current_char.isdigit() or self.current_char == '_':
+        while self.current_char is not None and (self.current_char.isalpha() or self.current_char.isdigit() or self.current_char == '_'):
             result += self.current_char
             self.advance()
         return result

@@ -106,8 +106,6 @@ class Parser:
             if self.symbol_table.exists(ident_name):
                 value = self.symbol_table.get(ident_name)
             else:
-                # self.lexer.state = f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
-                # self.symbol_table.set(ident_name, "Unknown")
                 self.isUnknown = True
                 return "Unknown"
         else:
@@ -129,8 +127,12 @@ class Parser:
     def ident(self, isAssigned):
         # print("ident")
         ident_name = self.lexer.token_string
-        if (not isAssigned) and (not self.symbol_table.exists(ident_name)) and (not self.isUnknown):
-            self.lexer.state = f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
+        # if (not isAssigned) and (not self.symbol_table.exists(ident_name)) and (not self.isUnknown):
+        if (not isAssigned) and (not self.symbol_table.exists(ident_name)):
+            if self.lexer.state == "(OK)":
+                self.lexer.state = f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
+            else:
+                self.lexer.state += f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
             self.symbol_table.set(ident_name, "Unknown")
             self.isUnknown = True
         self.match(IDENT)
