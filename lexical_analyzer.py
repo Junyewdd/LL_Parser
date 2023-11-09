@@ -79,7 +79,8 @@ class Lexer:
             # 공백
             if self.current_char.isspace() or ord(self.current_char) <= 32:
                 self.skip_whitespace()
-                self.sentence += ' '
+                if self.sentence:
+                    self.sentence += ' '
                 continue
             # 식별자
             if self.current_char.isalpha():
