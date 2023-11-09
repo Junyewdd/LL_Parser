@@ -3,13 +3,10 @@ class Printer:
         self.type = print_type
         self.symbol_table = symbolTable
         
-    def print_type_a(self, id, const, op, state, result):
+    def print_type_a(self, id, const, op, state):
         if self.type == 'a':
             print(f"id : {id}, const : {const}, op : {op}")
             print(state)
-            if result:
-                print("Result ==> ", end = " ")
-                self.symbol_table.print_symbol_table()
             
     def print_type_b(self, token):
         if self.type == 'b':

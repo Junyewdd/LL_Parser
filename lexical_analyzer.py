@@ -112,7 +112,7 @@ class Lexer:
                 if self.print_type == 'a':
                     print(self.sentence)
                 # print(self.state)
-                self.printer.print_type_a(self.id, self.const, self.op, self.state, False)
+                self.printer.print_type_a(self.id, self.const, self.op, self.state)
                 self.sentence = ''
                 self.id = 0
                 self.const = 0
@@ -190,7 +190,7 @@ class Lexer:
         if self.sentence:
             if self.print_type == 'a':
                 print(self.sentence)
-            self.printer.print_type_a(self.id, self.const, self.op, self.state, True)
+            self.printer.print_type_a(self.id, self.const, self.op, self.state)
             self.sentence = None
         
         self.token_string = ''

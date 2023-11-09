@@ -31,6 +31,7 @@ class Parser:
         while self.lexer.next_token == SEMI_COLON:
             self.match(SEMI_COLON)
             self.statement()
+            
             ##
             
     # <statement> → <ident><assignment_op><expression>
@@ -182,3 +183,6 @@ class Parser:
         # print("parse")
         self.program()
         self.match(EOF)
+        if self.lexer.print_type == 'a':
+            print("Result ==> ", end = " ")
+            self.symbol_table.print_symbol_table()
