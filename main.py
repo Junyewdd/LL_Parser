@@ -9,9 +9,6 @@ def main():
         
     Program.read(content, print_type)
 
-def process_line(line):
-    Program.read(line)
-
 
 if __name__ == '__main__':
     main()

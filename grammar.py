@@ -13,6 +13,7 @@ class Parser:
     
     def match(self, expected_token_type):
         if self.lexer.next_token == expected_token_type or self.isUnknown == True:
+            #
             self.lexer.lexical()
         else:
             print(f"Unexpected token : {self.lexer.next_token}")
@@ -37,7 +38,7 @@ class Parser:
     # <statement> → <ident><assignment_op><expression>
     def statement(self):
         # print("statement")
-        ident_name = self.ident()
+        ident_name = self.ident(True)
         self.assignment_op()
         value = self.expression()
         self.symbol_table.set(ident_name, value)
@@ -48,9 +49,7 @@ class Parser:
         # print("expression")
         value = self.term()
         result = self.term_tail()
-        # if value == "Unknown" or result == "Unknown":
-        #     return "Unknown"
-        if self.isUnknown == True:
+        if value == "Unknown" or result == "Unknown":
             return "Unknown"
         else: 
             value += result
@@ -63,9 +62,7 @@ class Parser:
         while self.lexer.next_token in [ADD_OP, MIN_OP]:
             isAddOp = self.add_operator()
             value = self.term()
-            # if value == "Unknown":
-            #     return "Unknown"
-            if self.isUnknown == True:
+            if value == "Unknown":
                 return "Unknown"
             if isAddOp == -1:
                 value *= -1
@@ -105,12 +102,12 @@ class Parser:
             value = self.expression()
             self.match(RIGHT_PAREN)
         elif self.lexer.next_token == IDENT:
-            ident_name = self.ident()            
+            ident_name = self.ident(False)            
             if self.symbol_table.exists(ident_name):
                 value = self.symbol_table.get(ident_name)
             else:
-                self.lexer.state = f"(error) \"정의되지 않은 변수({ident_name})가 참조됨\""
-                self.symbol_table.set(ident_name, "Unknown")
+                # self.lexer.state = f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
+                # self.symbol_table.set(ident_name, "Unknown")
                 self.isUnknown = True
                 return "Unknown"
         else:
@@ -129,9 +126,13 @@ class Parser:
             return float(value)
 
     # <ident> → any names conforming to C identifier rules
-    def ident(self):
+    def ident(self, isAssigned):
         # print("ident")
         ident_name = self.lexer.token_string
+        if (not isAssigned) and (not self.symbol_table.exists(ident_name)) and (not self.isUnknown):
+            self.lexer.state = f"(Error) \"정의되지 않은 변수({ident_name})가 참조됨\""
+            self.symbol_table.set(ident_name, "Unknown")
+            self.isUnknown = True
         self.match(IDENT)
         return ident_name
 
