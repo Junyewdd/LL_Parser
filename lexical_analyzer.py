@@ -205,9 +205,21 @@ class Lexer:
         
         self.token_string = ''
         self.next_token = EOF
+    
+    def setState(self, sentence):
+        if self.state == "(OK)":
+            self.state = sentence
+        else:
+            self.state += sentence
         
     def skip_token(self, token):
         # 중복 '+' 연산자를 건너뛰는 로직 추가
         self.skip_whitespace()
-        while self.current_char == token:            
+        
+        while self.current_char in ["+", "-", "*", "/"]:
+            if self.current_char == token:
+                self.setState(f"(Warning) \"중복 연산자({token}) 제거\"")
+                self.advance()
+            else:
+                self.setState(f"(Error): \"한 종류 이상의 연산자({token}, {self.current_char})가 연속으로 쓰임 => ({token})으로 처리\"")
             self.advance()
