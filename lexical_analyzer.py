@@ -44,8 +44,8 @@ class Lexer:
         raise Exception('Invalid character')
     
     def advance(self):
-        if self.text[self.pos] != "\n":
-            self.sentence += self.text[self.pos]
+        # if self.text[self.pos] != "\n":
+        #     self.sentence += self.text[self.pos]
         self.pos += 1
         if self.pos > len(self.text) - 1:
             self.current_char = None
@@ -76,11 +76,13 @@ class Lexer:
             # 공백
             if self.current_char.isspace() or ord(self.current_char) <= 32:
                 self.skip_whitespace()
+                self.sentence += ' '
                 continue
             # 식별자
             if self.current_char.isalpha():
                 self.token_string = self.word()
                 self.next_token = IDENT
+                self.sentence += self.token_string
                 self.id += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -88,6 +90,7 @@ class Lexer:
             if self.current_char.isdigit():
                 self.token_string = str(self.integer())
                 self.next_token = CONST
+                self.sentence += self.token_string
                 self.const += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -97,6 +100,10 @@ class Lexer:
                 self.advance()
                 self.token_string = ";"
                 self.next_token = SEMI_COLON
+                if self.sentence[-1] == ' ':
+                    self.sentence = self.sentence[:-1] + self.token_string
+                else:
+                    self.sentence += self.token_string
                 if self.print_type == 'a':
                     print(self.sentence)
                 self.printer.print_type_a(self.id, self.const, self.op, self.state, False)
@@ -114,6 +121,7 @@ class Lexer:
                     self.advance()
                     self.token_string = ":="
                     self.next_token = ASSIGNMENT_OP
+                    self.sentence += self.token_string
                     self.printer.print_type_b(self.token_string)
                     return
             # +
@@ -121,6 +129,7 @@ class Lexer:
                 self.advance()
                 self.token_string = "+"
                 self.next_token = ADD_OP
+                self.sentence += self.token_string
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -129,6 +138,7 @@ class Lexer:
                 self.advance()
                 self.token_string = "-"
                 self.next_token = MIN_OP
+                self.sentence += self.token_string
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -137,6 +147,7 @@ class Lexer:
                 self.advance()
                 self.token_string = "*"
                 self.next_token = MULT_OP
+                self.sentence += self.token_string
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -145,6 +156,7 @@ class Lexer:
                 self.advance()
                 self.token_string = "/"
                 self.next_token = DIV_OP
+                self.sentence += self.token_string
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -153,6 +165,7 @@ class Lexer:
                 self.advance()
                 self.token_string = "("
                 self.next_token = LEFT_PAREN
+                self.sentence += self.token_string
                 self.printer.print_type_b(self.token_string)
                 return
             # /
@@ -160,6 +173,7 @@ class Lexer:
                 self.advance()
                 self.token_string = ")"
                 self.next_token = RIGHT_PAREN
+                self.sentence += self.token_string
                 self.printer.print_type_b(self.token_string)
                 return
             
