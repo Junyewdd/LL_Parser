@@ -4,6 +4,7 @@ class Parser:
     def __init__(self, lexer, symbolTable):
         self.lexer = lexer
         self.symbol_table = symbolTable
+        self.isUnknown = False
         
     def error(self, message):
         print(f"Error : {message}")
@@ -11,11 +12,11 @@ class Parser:
         
     
     def match(self, expected_token_type):
-        if self.lexer.next_token == expected_token_type:
+        if self.lexer.next_token == expected_token_type or self.isUnknown == True:
             self.lexer.lexical()
         else:
             print(f"Unexpected token : {self.lexer.next_token}")
-            self.error("")
+            # self.error("")
     
     # <program> → <statements>
     def program(self):
@@ -45,8 +46,14 @@ class Parser:
     def expression(self):
         # print("expression")
         value = self.term()
-        value += self.term_tail()
-        return value
+        result = self.term_tail()
+        # if value == "Unknown" or result == "Unknown":
+        #     return "Unknown"
+        if self.isUnknown == True:
+            return "Unknown"
+        else: 
+            value += result
+            return value
         
     # <term_tail> → <add_op><term><term_tail> | ε
     def term_tail(self):
@@ -55,6 +62,10 @@ class Parser:
         while self.lexer.next_token in [ADD_OP, MIN_OP]:
             isAddOp = self.add_operator()
             value = self.term()
+            # if value == "Unknown":
+            #     return "Unknown"
+            if self.isUnknown == True:
+                return "Unknown"
             if isAddOp == -1:
                 value *= -1
             if self.lexer.next_token == RIGHT_PAREN:
@@ -65,15 +76,17 @@ class Parser:
     # <term> → <factor> <factor_tail>
     def term(self):
         # print("term")
+        
         value = self.factor()
-        # if self.lexer.next_token in [MULT_OP, DIV_OP]:
-        #     value *= self.factor_tail()
+        
         value = self.factor_tail(value)
         return value
 
     # <factor_tail> → <mult_op><factor><factor_tail> | ε
     def factor_tail(self, value):
         # print("factor_tail")
+        if value == "Unknown":
+            return "Unknown"
         while self.lexer.next_token in [MULT_OP, DIV_OP]:
             isMultOp = self.mult_operator()
             if isMultOp == 1:
@@ -95,7 +108,10 @@ class Parser:
             if self.symbol_table.exists(ident_name):
                 value = self.symbol_table.get(ident_name)
             else:
-                self.error(f"{ident_name} is not defined")
+                self.lexer.state = f"(error) \"정의되지 않은 변수({ident_name})가 참조됨\""
+                self.symbol_table.set(ident_name, "Unknown")
+                self.isUnknown = True
+                return "Unknown"
         else:
             value = self.const()
         return value

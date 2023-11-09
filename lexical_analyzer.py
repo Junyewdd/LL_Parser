@@ -35,7 +35,10 @@ class Lexer:
         self.state = "(OK)"
         self.print_type = print_type
         self.printer = Printer(print_type, symbolTable)
-        self.symbol_table = None
+        self.symbol_table = symbolTable
+        
+    # def setState(self, newState):
+    #     self.state = newState
         
     def split_statements(self,content):
         return content.split(';')
@@ -83,6 +86,7 @@ class Lexer:
                 self.token_string = self.word()
                 self.next_token = IDENT
                 self.sentence += self.token_string
+                # self.symbol_table.set(self.token_string, 0)
                 self.id += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -106,11 +110,13 @@ class Lexer:
                     self.sentence += self.token_string
                 if self.print_type == 'a':
                     print(self.sentence)
+                # print(self.state)
                 self.printer.print_type_a(self.id, self.const, self.op, self.state, False)
                 self.sentence = ''
                 self.id = 0
                 self.const = 0
                 self.op = 0
+                self.state = "(OK)"
                 self.printer.print_type_b(self.token_string)
                 return
             
