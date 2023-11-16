@@ -222,4 +222,3 @@ class Lexer:
                 self.advance()
             else:
                 self.setState(f"(Error): \"한 종류 이상의 연산자({token}, {self.current_char})가 연속으로 쓰임 => ({token})으로 처리\"")
-            self.advance()
