@@ -195,5 +195,7 @@ class Parser:
                 self.setState(f"(Warning) 중복 연산자({TOKEN_DICT[token_type]}) 제거")
                 check = True
         self.lexer.skip_print = False
+        if self.lexer.token_string == '':
+            self.lexer.lexical()
         
             
