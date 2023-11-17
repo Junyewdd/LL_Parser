@@ -16,8 +16,8 @@ class Parser:
         if self.lexer.next_token == expected_token_type or self.isUnknown == True:
             #
             self.lexer.lexical()
-        else:
-            print(f"Unexpected token : {self.lexer.next_token}")
+        # else:
+        #     print(f"Unexpected token : {self.lexer.next_token}")
             # self.error("")
     
     # <program> → <statements>
@@ -29,6 +29,9 @@ class Parser:
     def statements(self):
         self.statement()
         while self.lexer.next_token == SEMI_COLON:
+            if self.lexer.pos == len(self.lexer.text):
+                print("(Error) \"다음 statement 없음\"")
+                break
             self.match(SEMI_COLON)
             self.statement()
             

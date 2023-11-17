@@ -53,6 +53,7 @@ class Lexer:
         #     self.pos +=1
         #     self.isContinued = False
         self.pos += 1
+            # self.advance()
         if self.pos > len(self.text) - 1:
             self.current_char = None
         else:
