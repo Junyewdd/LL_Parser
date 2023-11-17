@@ -130,13 +130,29 @@ class Lexer:
             # :=    
             if self.current_char == ":":
                 self.advance()
+                checkSpace = False
+                # 공백 문자를 건너뛰는 로직 추가
+                while self.current_char.isspace():
+                    checkSpace = True
+                    self.advance()
                 if self.current_char == "=":
+                    if checkSpace == True:
+                        self.setState(f"(Warning) \"할당 연산자 사이 공백 존재\"")
                     self.advance()
                     self.token_string = ":="
                     self.next_token = ASSIGNMENT_OP
                     self.sentence += self.token_string
                     self.printer.print_type_b(self.token_string)
                     return
+                else:
+                    self.setState(f"(Warning) \"잘못된 할당 연산자 사용\"")
+                    # self.advance()
+                    self.token_string = ":="
+                    self.next_token = ASSIGNMENT_OP
+                    self.sentence += self.token_string
+                    self.printer.print_type_b(self.token_string)
+                    return
+                    
             # +
             if self.current_char == "+":
                 self.advance()
