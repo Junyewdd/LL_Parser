@@ -85,8 +85,6 @@ class Lexer:
             # 공백
             if self.current_char.isspace() or ord(self.current_char) <= 32:
                 self.skip_whitespace()
-                if self.sentence:
-                    self.sentence += ' '
                 continue
             # 식별자
             if self.current_char.isalpha():
@@ -141,7 +139,7 @@ class Lexer:
                     self.advance()
                     self.token_string = ":="
                     self.next_token = ASSIGNMENT_OP
-                    self.sentence += self.token_string
+                    self.sentence += " " + self.token_string + " "
                     self.printer.print_type_b(self.token_string)
                     return
                 else:
@@ -149,7 +147,7 @@ class Lexer:
                     # self.advance()
                     self.token_string = ":="
                     self.next_token = ASSIGNMENT_OP
-                    self.sentence += self.token_string
+                    self.sentence += " " + self.token_string + " "
                     self.printer.print_type_b(self.token_string)
                     return
             if self.current_char == "=":
@@ -157,7 +155,7 @@ class Lexer:
                 self.setState(f"(Error) \"잘못된 할당 연산자 사용(=)\"")
                 self.token_string = ":="
                 self.next_token = ASSIGNMENT_OP
-                self.sentence += self.token_string
+                self.sentence += " " + self.token_string + " "
                 self.printer.print_type_b(self.token_string)
                 return
                     
@@ -167,7 +165,7 @@ class Lexer:
                 self.skip_token("+")
                 self.token_string = "+"
                 self.next_token = ADD_OP
-                self.sentence += self.token_string
+                self.sentence += " " + self.token_string + " "
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -177,7 +175,7 @@ class Lexer:
                 self.skip_token("-")
                 self.token_string = "-"
                 self.next_token = MIN_OP
-                self.sentence += self.token_string
+                self.sentence += " " + self.token_string + " "
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -187,7 +185,7 @@ class Lexer:
                 self.skip_token("*")
                 self.token_string = "*"
                 self.next_token = MULT_OP
-                self.sentence += self.token_string
+                self.sentence += " " + self.token_string + " "
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return
@@ -197,7 +195,7 @@ class Lexer:
                 self.skip_token("/")
                 self.token_string = "/"
                 self.next_token = DIV_OP
-                self.sentence += self.token_string
+                self.sentence += " " + self.token_string + " "
                 self.op += 1
                 self.printer.print_type_b(self.token_string)
                 return

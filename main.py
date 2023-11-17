@@ -10,6 +10,8 @@ def main():
     
     if len(sys.argv) > 1:
         file_path = sys.argv[-1]
+        
+    # file_path="file1.txt"
     
     with open(file_path, 'r') as file:
         content = file.read().strip()
