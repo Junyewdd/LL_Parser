@@ -152,6 +152,13 @@ class Lexer:
                     self.sentence += self.token_string
                     self.printer.print_type_b(self.token_string)
                     return
+            # if self.current_char == "=":
+            #     self.advance()
+            #     self.setState(f"(Warning) \"잘못된 할당 연산자 사용\"")
+            #     self.token_string = ":="
+            #     self.next_token = ASSIGNMENT_OP
+            #     self.sentence += self.token_string
+            #     self.printer.print_type_b(self.token_string)
                     
             # +
             if self.current_char == "+":
