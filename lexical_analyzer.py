@@ -218,8 +218,8 @@ class Lexer:
         
         while self.current_char in ["+", "-", "*", "/"]:
             if self.current_char == token:
-                self.setState(f"(Warning) \"중복 연산자({token}) 제거\"")
+                self.setState(f"(Warning) \"중복 연산자({token}) 제거\"\n")
                 self.advance()
             else:
-                self.setState(f"(Error): \"한 종류 이상의 연산자({token}, {self.current_char})가 연속으로 쓰임 => ({token})으로 처리\"")
+                self.setState(f"(Error): \"한 종류 이상의 연산자({token}, {self.current_char})가 연속으로 쓰임 => ({token})으로 처리\"\n")
                 self.advance()
